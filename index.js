@@ -6,17 +6,19 @@ const jwt = require('jsonwebtoken');
 const verify = require('./verifyToken');
 const app = express();
 var mysql = require('mysql');
+var cors = require('cors');
 
 const TAJNA_SVEMIRA = "TAJNA_SVEMIRA";
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cors());
 
 var con = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "admin",
+    password: "",
     database: "test"
 });
 
@@ -32,7 +34,7 @@ app.post('/register', async function(req, res) {
     var salt = await bcrypt.genSalt(10);
     var hashPass = await bcrypt.hash(pass, salt);
 
-    var query = "insert into korisnik(username,password,email,privilegija,banovan) values('"+user+"','"+hashPass+"','"+email+"',1,0);";
+    var query = "insert into korisnik(username,password,email,privilegija,banovan) values("+con.escape(user)+",'"+hashPass+"',"+con.escape(email)+",1,0);";
 
     con.query(query, function(err, result){
         if(err)
@@ -51,7 +53,7 @@ app.post('/login', async function (req, res){
     var user = req.body.username;
     var pass = req.body.password;
     
-    var query = "select id, password from korisnik where username = '" + user + "';";
+    var query = "select id, password from korisnik where username = " + con.escape(user) + ";";
     //var query = "select id from korisnik;";
     con.query(query, async function(err, result){
         if(err)
@@ -67,14 +69,14 @@ app.post('/login', async function (req, res){
             const ValidPass = await bcrypt.compare(pass, result[0].password);
             if(!ValidPass)
             {
-                return res.status(401).send("Pogrešna šifra");
+                return res.status(401).send("Pogrešna šifra "+pass);
             }
             else
             {               
                 const token = jwt.sign({id: result[0].id}, TAJNA_SVEMIRA);
                 var sad = new Date();
                 var datumIsteka = new Date(sad.getTime() + 15*60000).toISOString().slice(0,19).replace('T', ' ');
-                var query2 = "insert into sesija(token, datum_isteka) values('"+token+"','"+datumIsteka+"')";
+                var query2 = "insert into sesija(id_korisnik, token, datum_isteka) values('"+ result[0].id +"', '"+token+"','"+datumIsteka+"')";
                 con.query(query2, async function(err, result){
                     if(err)
                     {
