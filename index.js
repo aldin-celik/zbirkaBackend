@@ -716,7 +716,9 @@ app.get('/dajZadatkeGrupe/:idGrupe/:stranica', verify, async function(req, res){
     }
 });
 
-
+app.get('/', async function(req, res){
+	return res.status(200).send("Hello");
+});
 
 app.post('/dummy', verify , async function(req, res){
     const token = req.header('auth-token'); 
