@@ -727,7 +727,10 @@ app.post('/dummy', verify , async function(req, res){
 
 });
 
-app.listen(8080);
+var PORT = process.env.PORT || 31800;
+
+app.listen(PORT,function(){ console.log('server successfully started on port '+PORT); });
+
 
 
 
