@@ -29,7 +29,7 @@ var con = mysql.createConnection({
     database: "cHY9cZAHWV"
 });
 
-
+var PORT = process.env.PORT || 31800;
 
 con.connect();
 
@@ -727,7 +727,7 @@ app.post('/dummy', verify , async function(req, res){
 
 });
 
-var PORT = process.env.PORT || 31800;
+
 
 app.listen(PORT,function(){ console.log('server successfully started on port '+PORT); });
 
