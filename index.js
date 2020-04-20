@@ -13,23 +13,24 @@ const TAJNA_SVEMIRA = "TAJNA_SVEMIRA";
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
-/*
+
 var con = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
     password: "",
     database: "test"
-});*/
+});
+/*
 var con = mysql.createConnection({
     host: "remotemysql.com",
     port: 3306,
     user: "cHY9cZAHWV",
     password: "Tn0jp0iWB0",
     database: "cHY9cZAHWV"
-});
+});*/
 
-var PORT = process.env.PORT || 31800;
+var PORT = process.env.PORT || 8080;
 
 con.connect();
 
